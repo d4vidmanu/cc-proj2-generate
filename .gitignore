@@ -1,0 +1,27 @@
+# Ignorar el directorio de datos generados
+/generated_data/
+
+# Ignorar los archivos de dependencias de Node.js
+/node_modules/
+
+# Ignorar archivos de configuración de Lock para Node.js
+/package-lock.json
+/package.json
+
+# Ignorar archivos de configuración específicos del entorno
+.env
+
+# Ignorar los scripts generados o archivos temporales
+*.log
+*.tmp
+
+# Ignorar cualquier otro archivo que no debe ser versionado
+*.bak
+*.swp
+
+# Ignorar el directorio de dependencias de Python
+__pycache__
+*.pyc
+
+# Ignorar los resultados de la compilación o archivos de salida
+/output/

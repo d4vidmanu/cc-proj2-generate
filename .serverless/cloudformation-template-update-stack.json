@@ -1,0 +1,580 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "The AWS CloudFormation template for this Serverless application",
+  "Resources": {
+    "CommentsTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "dev-hotel-comments",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "tenant_id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "comment_id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "room_id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "user_id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "created_at",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "tenant_id",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "comment_id",
+            "KeyType": "RANGE"
+          }
+        ],
+        "LocalSecondaryIndexes": [
+          {
+            "IndexName": "tenant-room-index",
+            "KeySchema": [
+              {
+                "AttributeName": "tenant_id",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "room_id",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "user-date-index",
+            "KeySchema": [
+              {
+                "AttributeName": "user_id",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "created_at",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        }
+      }
+    },
+    "HotelsTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "dev-hotel-hotels",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "tenant_id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "hotel_id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "hotel_name",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "hotel_location",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "tenant_id",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "hotel_id",
+            "KeyType": "RANGE"
+          }
+        ],
+        "LocalSecondaryIndexes": [
+          {
+            "IndexName": "tenant-name-index",
+            "KeySchema": [
+              {
+                "AttributeName": "tenant_id",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "hotel_name",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "hotel_location-index",
+            "KeySchema": [
+              {
+                "AttributeName": "hotel_location",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "tenant_id",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        }
+      }
+    },
+    "PaymentsTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "dev-hotel-payments",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "tenant_id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "payment_id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "user_id",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "tenant_id",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "payment_id",
+            "KeyType": "RANGE"
+          }
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        },
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "user_id-tenant_id-index",
+            "KeySchema": [
+              {
+                "AttributeName": "user_id",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "tenant_id",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ]
+      }
+    },
+    "ReservationsTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "dev-hotel-reservations",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "tenant_id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "reservation_id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "start_date",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "user_id",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "tenant_id",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "reservation_id",
+            "KeyType": "RANGE"
+          }
+        ],
+        "LocalSecondaryIndexes": [
+          {
+            "IndexName": "tenant-start_date-index",
+            "KeySchema": [
+              {
+                "AttributeName": "tenant_id",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "start_date",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "user-start_date-index",
+            "KeySchema": [
+              {
+                "AttributeName": "user_id",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "start_date",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        }
+      }
+    },
+    "RoomsTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "dev-hotel-rooms",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "tenant_id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "room_id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "room_name",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "availability",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "tenant_id",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "room_id",
+            "KeyType": "RANGE"
+          }
+        ],
+        "LocalSecondaryIndexes": [
+          {
+            "IndexName": "tenant-room_name-index",
+            "KeySchema": [
+              {
+                "AttributeName": "tenant_id",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "room_name",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "is_available-index",
+            "KeySchema": [
+              {
+                "AttributeName": "availability",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "tenant_id",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        }
+      }
+    },
+    "ServicesTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "dev-hotel-services",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "tenant_id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "service_id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "service_name",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "service_category",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "tenant_id",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "service_id",
+            "KeyType": "RANGE"
+          }
+        ],
+        "LocalSecondaryIndexes": [
+          {
+            "IndexName": "tenant-service_name-index",
+            "KeySchema": [
+              {
+                "AttributeName": "tenant_id",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "service_name",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "category-index",
+            "KeySchema": [
+              {
+                "AttributeName": "service_category",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "service_id",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        }
+      }
+    },
+    "UsersTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "dev-hotel-users",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "tenant_id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "user_id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "email",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "tenant_id",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "user_id",
+            "KeyType": "RANGE"
+          }
+        ],
+        "LocalSecondaryIndexes": [
+          {
+            "IndexName": "tenant-email-index",
+            "KeySchema": [
+              {
+                "AttributeName": "tenant_id",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "email",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "email-index",
+            "KeySchema": [
+              {
+                "AttributeName": "email",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "tenant_id",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        }
+      }
+    },
+    "TokensTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "dev-hotel-tokens",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "tenant_id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "token",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "expiration",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "tenant_id",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "token",
+            "KeyType": "RANGE"
+          }
+        ],
+        "LocalSecondaryIndexes": [
+          {
+            "IndexName": "tenant-expiration-index",
+            "KeySchema": [
+              {
+                "AttributeName": "tenant_id",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "expiration",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "token-index",
+            "KeySchema": [
+              {
+                "AttributeName": "token",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "tenant_id",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "ServerlessDeploymentBucketName": {
+      "Value": "serverless-framework-deployments-us-east-1-5b294e90-2360",
+      "Export": {
+        "Name": "sls-dynamodb-setup-dev-ServerlessDeploymentBucketName"
+      }
+    }
+  }
+}
