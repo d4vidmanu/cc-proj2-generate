@@ -25,3 +25,6 @@ __pycache__
 
 # Ignorar los resultados de la compilación o archivos de salida
 /output/
+
+# Ignorar la carpeta generada por Serverless
+.serverless/

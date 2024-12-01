@@ -1,1 +1,33 @@
-pip install -r requirements.txt
+Pasos para configurar el entorno y generar la data
+
+1. Configurar las credenciales de AWS:
+   - Abre el archivo ~/.aws/credentials en tu máquina.
+   - Asegúrate de tener las credenciales de acceso configuradas correctamente con tu aws_access_key_id y aws_secret_access_key:
+
+     [default]
+     aws_access_key_id=TU_ACCESS_KEY
+     aws_secret_access_key=TU_SECRET_KEY
+
+2. Configurar la región de AWS:
+   - Abre o crea el archivo ~/.aws/config.
+   - Configura la región que vas a utilizar (en este caso, us-east-1):
+
+     [default]
+     region=us-east-1
+
+3. Crear las variables de entorno:
+   - Crea un archivo .env en el directorio raíz del proyecto.
+   - Define las siguientes variables de entorno:
+
+     ORG_NAME=d4vidmanu       # Nombre de la organización (reemplaza con tu nombre de organización)
+     ROLE_ARN=arn:aws:iam::248552829072:role/LabRole  # El ARN del rol de IAM
+     STAGE=dev                # El nombre del entorno, puede ser 'dev', 'prod', etc.
+
+4. Ejecutar el script de inicialización:
+   - Una vez configurados los archivos de AWS y las variables de entorno, ejecuta el siguiente script para instalar las dependencias y generar los datos:
+
+     ./generate_data.sh
+
+   Esto instalará las dependencias necesarias y ejecutará el script main.py para generar y cargar los datos a DynamoDB.
+   
+¡Listo! Ahora el entorno está preparado y los datos se han generado y subido correctamente a DynamoDB.
